@@ -1,0 +1,27 @@
+## Collect any enviromental variables that are set in /etc/sysconfig/httpd
+## Collect the dispatchers number
+PassEnv DISP_ID
+## Use this vhost in conjunction with adding a Host Header (authorflush) to your AEM author flush agent configurations so they fall into this host
+## This is a deliberate flush target that doesn't conflict with customers configurations of the dispatcher
+## This is for the intended use to flush cached directories of author content. /var/www/author
+<VirtualHost *:80>
+	ServerName	"authorflush"
+	ServerAlias "authordispflush"
+	
+	## Use a doc root that matches what's in the /etc/httpd/conf/author-farm.any
+	DocumentRoot	${AUTHOR_DOCROOT}
+	## Add header breadcrumbs for help in troubleshooting
+	<IfModule mod_headers.c>
+			Header always add X-Dispatcher ${DISP_ID}
+			Header always add X-Vhost "authorflush"
+	</IfModule>
+        <Directory "${AUTHOR_DOCROOT}">
+                AllowOverride None
+                Require all granted
+        </Directory>
+	<Directory />
+		<IfModule disp_apache2.c>
+			SetHandler dispatcher-handler
+		</IfModule>
+	</Directory>
+</VirtualHost>

@@ -1,0 +1,24 @@
+#!/bin/sh
+
+if [ ! -d $(pwd)/src/conf ]; then
+    echo "*ERROR*"
+    echo "This script is supposed to be run in the root directory of your dispatcher project "
+    echo "though we could not find a directory /etc/httpd in the current directory."
+    echo "Please change to your dispatcher directory and try again."
+    echo ""
+    exit 1
+fi
+
+mkdir logs
+
+echo "Starting dispatcher, mounting local configuration from ./etc/httpd"
+
+docker run -p 80:8080 -p 443:8443 -itd --rm --name dispatcher \
+  --mount type=bind,src=$(pwd)/src/conf,dst=/etc/httpd/conf,readonly=true \
+  --mount type=bind,src=$(pwd)/src/conf.d,dst=/etc/httpd/conf.d,readonly=true \
+  --mount type=bind,src=$(pwd)/src/conf.dispatcher.d,dst=/etc/httpd/conf.dispatcher.d,readonly=true \
+  --mount type=bind,src=$(pwd)/src/conf.modules.d,dst=/etc/httpd/conf.modules.d,readonly=true \
+  --mount type=bind,src=$(pwd)/logs,dst=/var/log/httpd \
+  --mount type=tmpfs,dst=/tmp \
+  --env-file scripts/env.sh
+  dispatcher
