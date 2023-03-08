@@ -20,5 +20,5 @@ docker run -p 80:8080 -p 443:8443 -itd --rm --name dispatcher \
   --mount type=bind,src=$(pwd)/src/conf.modules.d,dst=/etc/httpd/conf.modules.d,readonly=true \
   --mount type=bind,src=$(pwd)/logs,dst=/var/log/httpd \
   --mount type=tmpfs,dst=/tmp \
-  --env-file scripts/env.sh
+  --env-file scripts/env.sh \
   dispatcher
