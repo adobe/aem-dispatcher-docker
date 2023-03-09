@@ -1,0 +1,34 @@
+#!/bin/sh
+
+VERSION=""
+PATH_TO_CONF="etc/httpd"
+
+if [ ! -d $(pwd)$VERSION/$PATH_TO_CONF/conf ]; then
+    echo "**** ERROR ****"
+    echo "This script is supposed to be run in the root directory of the dispatcher project, "
+    echo "though we could not find a directory .$VERSION/$PATH_TO_CONF/conf conf from the current directory."
+    echo "Please change to the projects main directory and try again."
+    echo ""
+    exit 1
+fi
+
+mkdir logs 2> /dev/null
+mkdir cache 2> /dev/null
+
+
+echo ""
+echo "Starting dispatcher, mounting local configuration from ./$VERSION/$PATH_TO_CONF"
+echo " Open your browser at http://we-retail.docker.local/content/we-retail/us/en.html"
+echo " **** Press Ctrl-C to stop **** "
+echo ""
+
+docker run -p 80:8080 -p 443:8443 -it --rm  \
+  --mount type=bind,src=$(pwd)/$VERSION/$PATH_TO_CONF/conf,dst=/etc/httpd/conf,readonly=true \
+  --mount type=bind,src=$(pwd)/$VERSION/$PATH_TO_CONF/conf.d,dst=/etc/httpd/conf.d,readonly=true \
+  --mount type=bind,src=$(pwd)/$VERSION/$PATH_TO_CONF/conf.dispatcher.d,dst=/etc/httpd/conf.dispatcher.d,readonly=true \
+  --mount type=bind,src=$(pwd)/$VERSION/$PATH_TO_CONF/conf.modules.d,dst=/etc/httpd/conf.modules.d,readonly=true \
+  --mount type=bind,src=$(pwd)/logs,dst=/var/log/httpd \
+  --mount type=bind,src=$(pwd)/cache,dst=/mnt/var/www/html \
+  --mount type=tmpfs,dst=/tmp \
+  --env-file scripts/env.sh \
+  --name mydispatcher dispatcher | cat

@@ -1,5 +1,6 @@
 
 /.idea/
 logs/
+cache/
 /dispatcher-docker.iml
 .DS_Store

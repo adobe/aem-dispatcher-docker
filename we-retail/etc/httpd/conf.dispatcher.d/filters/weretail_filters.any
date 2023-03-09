@@ -1,0 +1,91 @@
+
+###############################################################################################
+##
+##    NOTE: 
+##    This file is for educational use, only. It does not guarantee a safe configuration 
+##    for production use!
+##
+###############################################################################################
+
+
+
+
+###############################################################################################
+##                                         
+##   BLACKLIST: 
+##   Deny everything by default 
+##                                         
+###############################################################################################
+
+/DENY_ALL { /type "deny"  /url "*" }
+
+
+###############################################################################################
+##
+##   WHITELIST: 
+##   Allow only URLs the aplication requires and that are known to be secure.
+##   Whitelist entries must be as SPECIFIC as possible , i.e. they should define as many 
+##   attributes as possible (path, extension and suffix).    
+## 
+##   Note: We use mnemonic names for the rules instead of numeric ones for better readability  
+## 
+##############################################################################################
+
+
+## regular content and resource access; 
+## pattern: /allow- { /type "allow" /method "GET" /path '' /selectors '' /extension ''  /suffix ''   }
+ 
+ /allow-content-html          { /type "allow" /method "GET" /path '/content/.*'          /selectors '' /extension 'html'  /suffix ''   }
+ /allow-content-resources     { /type "allow" /method "GET" /path '/content/.*'          /selectors '' /extension '(css|eot|gif|ico|jpeg|jpg|js|gif|pdf|png|svg|swf|ttf|woff|woff2)' /suffix '' }
+ /allow-clientlib-resources   { /type "allow" /method "GET" /path '/etc/clientlibs/.*'   /selectors '' /extension '(css|eot|gif|ico|jpeg|jpg|js|gif|png|svg|swf|ttf|woff|woff2)'     /suffix '' }
+ 
+ /allow-contexthub            { /type "allow" /method "GET" /path '/content/.*/_jcr_content/contexthub'  /selectors '(pagedata|commerce|cart|orderhistory|relatedproducts|smartlists)'    /extension '(json)'  }
+ /allow-productimages         { /type "allow" /method "GET" /path '/content/.*/_jcr_content/.*'          /selectors '(img|coreimg)' /extension '(jpg|jpeg|png)' /suffix '.*(jpg|jpeg|png)' }
+
+
+/allow-base-clientlibs-proxyservlet             { /type "allow" /method "GET" /url '/etc.clientlibs/(clientlibs|foundation|core).*\.(css|js)'   }
+/allow-application-clientlibs-proxyservlet      { /type "allow" /method "GET" /url '/etc.clientlibs/weretail/clientlibs/.*\.(css|js|woff2|ttf)'   }
+
+## individual URLs; 
+## pattern /allow- { /type "allow" /method "GET" /url '' }
+
+ /allow-cloudsettings           { /type "allow" /method "GET" /url  '/etc/cloudsettings.kernel.js/libs/settings/cloudsettings/legacy/contexthub'}
+ /allow-favicon                 { /type "allow" /method "GET" /url  '/favicon.ico'}
+ /allow-segmentation            { /type "allow" /method "GET" /url  '/conf/we-retail/settings/wcm/segments.seg.js' }
+
+
+## allow basic built-in functionality
+/allow-csrf-token  { /type "allow" /method "GET" /url '/libs/granite/csrf/token.json' /extension 'json' }
+
+#/allow-personalization { /type "allow" /method "GET" /path "/libs/cq/personalization" }  
+#/allow-shopping-cart { /type "allow" /method "POST" /path "/content/[.]*.commerce.cart.json" }  ## allow POSTs to update the shopping cart
+
+
+
+###############################################################################################
+##                                         
+##   BACKSTOP:
+##    
+##   Deny all URLs that are known to be harmful. These rules must be as GENERIC as possible.
+##   I.e. if possible only define path-patterns, suffix-patterns or extensions. 
+##                                         
+###############################################################################################
+
+#/deny-sufixes { /type "deny" /url "/content*"  }
+
+
+/deny-greedy-selectors      { /type "deny" /selectors '(feed|rss|pages|languages|blueprint|infinity|tidy|sysview|docview|query|[0-9-]+|jcr:content)' /extension '(json|xml|html|feed)' }
+/deny-authoring-queries-001 { /type "deny" /method "GET" /query "debug=*" }
+/deny-authoring-queries-002 { /type "deny" /method "GET" /query "wcmmode=*" }
+
+/deny-healthcheck-on-public-domainname { /type "deny" /path "/content/ams/healthcheck/*"}
+/deny-regent-on-oublic-domainname      { /type "deny" /url "/content/regent.html"}
+/deny-path-traversal-attack            { /type "deny" /url '.*/[.][.];/.*' }
+/deny-password-hash-retrieval          { /type "deny" /suffix '(.*infinity.*|.*children.*|.*tidy.*)' } ## AMSSEC033 Deny AEM password hash retrieval (AMSAUTO-15449)
+/deny-bracket-filter-pivots            { /type "deny" /url '.*(\\[|]).*' } ## Deny bracket filter pivots like /.[./ which tries to resolve as a /../ (AMSAUTO-22244)
+
+
+## AMS blocks suffix and selectors by default.  These are the most abused filter bypasses.  Please only allow ones that you need.
+#/0025 { /type "deny" /url "/content*" /suffix "*" }
+#/0026 { /type "deny" /url "/content*" /selectors "*" }
+#/9026 { /type "allow" /url '/content/.*' /selectors '(img|coreimg)' }

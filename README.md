@@ -69,9 +69,40 @@ CONTAINER ID   IMAGE        COMMAND                  CREATED              STATUS
 
 ## Testing your AEM installation
 
-The dispatcher maps `publish.docker.local` to the local publisher instance on port 4503. Run the publisher and
+The dispatcher maps `publish.docker.local` and `publish` to the local Publish instance on port `4503` and `author.docker.local` on port `4502`to  the Author. Make sure, your local `/etc/hosts`  can resolve either name:
 
-navigate to [http://publish.docker.local/content/we-retail/language-masters/en.html](http://publish.docker.local/content/we-retail/language-masters/en.html)
+
+
+```sh
+$ cat /etc/hosts | grep docker.local
+127.0.0.1 author.docker.local
+127.0.0.1 publish.docker.local
+127.0.0.1 host.docker.internal
+127.0.0.1 publish
+```
+
+If you do not see the entries,  add the names to the file:
+
+```sh
+$ sudo sh -c 'echo "127.0.0.1 author.docker.local" >> /etc/hosts'
+$ sudo sh -c 'echo "127.0.0.1 publish.docker.local" >> /etc/hosts'
+$ sudo sh -c 'echo "127.0.0.1 host.docker.local" >> /etc/hosts'
+$ sudo sh -c 'echo "127.0.0.1 publish" >> /etc/hosts'
+```
+
+ 
+
+Run the publisher and navigate to [http://publish.docker.local/content/we-retail/language-masters/en.html](http://publish.docker.local/content/we-retail/language-masters/en.html)
+
+
+
+> TIP: If you experience timeouts while the browser is trying to resolve 'publish.docker.local' it could be that the router of your local network is trying to resolve the name. Use "publish" instead or reset your resolver and restart the browser.
+
+
+
+> NOTE: We are using a "bare" AMS config that has not been adapted to a particular application. Thus, when you open the we-retail app, most of the images will be blocked. This reflects the best practice on how to configure the Dispatcher: Block everything except what your application necessarily needs. Note also, that the flush agent from AEM does not work in this setup as AEM sends 127.0.0.1 as hostname instead of the whitelisted Author/Publish hostnames.  
+>
+> Browse into `./we-retail` for a slightly modified but working example. 
 
 ## Adapting your localhost
 
