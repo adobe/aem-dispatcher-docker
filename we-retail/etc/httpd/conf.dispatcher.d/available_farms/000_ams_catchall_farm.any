@@ -1,0 +1,23 @@
+/catchallfarm {
+	/clientheaders {
+		$include "/etc/httpd/conf.dispatcher.d/clientheaders/ams_publish_clientheaders.any"
+		$include "/etc/httpd/conf.dispatcher.d/clientheaders/ams_common_clientheaders.any"
+	}
+	## Greedy match for all un-matched hostnames
+	/virtualhosts {
+		"*"
+	}
+	## Intentionally redirecting renderer traffic to catch all
+	/renders {
+		/0 {
+			/hostname "127.0.0.1"
+			/port "80"
+			/timeout "10000"
+		}
+	}
+	## only handle the requests in the following acl. default is 'none'
+	## the glob pattern is matched against the first request line
+	/filter {
+		/0001 { /type "deny"  /url "*" }
+	}
+}
