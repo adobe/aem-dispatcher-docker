@@ -38,7 +38,11 @@ RUN ln -s /etc/httpd/conf.dispatcher.d/available_farms/000_ams_catchall_farm.any
 RUN ln -s /etc/httpd/conf.dispatcher.d/available_farms/001_ams_author_flush_farm.any /etc/httpd/conf.dispatcher.d/enabled_farms/001_ams_author_flush_farm.any
 RUN ln -s /etc/httpd/conf.dispatcher.d/available_farms/001_ams_publish_flush_farm.any /etc/httpd/conf.dispatcher.d/enabled_farms/001_ams_publish_flush_farm.any
 RUN ln -s /etc/httpd/conf.dispatcher.d/available_farms/002_ams_author_farm.any /etc/httpd/conf.dispatcher.d/enabled_farms/002_ams_author_farm.any
-RUN ln -s /etc/httpd/conf.dispatcher.d/available_farms/002_ams_publish_farm.any /etc/httpd/conf.dispatcher.d/enabled_farms/002_ams_publish_farm.any
+
+# Setup sample configs
+COPY sample/weretail_filters.any /etc/httpd/conf.dispatcher.d/filters/weretail_filters.any
+COPY sample/weretail_publish_farm.any /etc/httpd/conf.dispatcher.d/available_farms/100_weretail_publish_farm.any
+RUN ln -s /etc/httpd/conf.dispatcher.d/available_farms/100_weretail_publish_farm.any /etc/httpd/conf.dispatcher.d/enabled_farms/100_weretail_publish_farm.any
 
 # Install dispatcher
 ARG TARGETARCH
