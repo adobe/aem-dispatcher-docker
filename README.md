@@ -2,9 +2,9 @@
 # Dispatcher Docker image
 
 This is a simple dispatcher image that is very close to an AMS setup.
-It builds on top of [centos7](https://hub.docker.com/_/centos/) since the AMS dispatcher is build on top of Redhat Enterprise Linux 7.7 and contains the default Dispatcher 2.6 configuration.
+It builds on top of [centos7](https://hub.docker.com/_/centos/) since the AMS dispatcher is build on top of Redhat Enterprise Linux 7.7 and contains the default AMS Dispatcher 2.6 configuration.
 
-The default publish host has been set to `localhost` and the default renderer is set to `host.docker.internal:4503` which should point to AEM instance running on your local computer.
+The default publish host has been set to `publish.docker.local` and the default renderer is set to `host.docker.internal:4503` which should point to the AEM instance running on your local computer.
 
 [HAProxy](https://www.haproxy.org/) has been embedded in the image to support SSL connections the mimic how AMS has setup their ELBs/AppGWs.
 
@@ -38,11 +38,11 @@ dispatcher   latest   6b4b91a23c06   1 minute ago   725MB
 You can run the image in two different ways
 
 1. As a completely independent remote server
-   - This is a quick and dirty way to get dispatcher up and running locally and you're not planning to make any changes to the configuration files.
+   - This is a quick way to get dispatcher up and running locally and you're not planning to make any changes to the configuration files.
 2. By keeping the configuration files on your local system and mounting them when you start the image.
    - This is the recommended way to start the image as it will allow you to quickly make changes and see them apply without the need to rebuild the container.
 
-### Running the image - Quick and dirty
+### Running the image
 
 ```shell
 docker run -p 80:8080 -p 443:8443 -itd --rm --env-file scripts/env.sh --name dispatcher dispatcher
@@ -69,25 +69,22 @@ CONTAINER ID   IMAGE        COMMAND                  CREATED              STATUS
 
 ## Testing your AEM installation
 
-The dispatcher maps `publish.docker.local` to the local publisher instance on port 4503. Run the publisher and
-
-navigate to [http://publish.docker.local/content/we-retail/language-masters/en.html](http://publish.docker.local/content/we-retail/language-masters/en.html)
+The dispatcher maps `publish.docker.local` to the local publisher instance on port 4503. 
+Run the publisher and navigate to [http://publish.docker.local/content/we-retail/language-masters/en.html](http://publish.docker.local/content/we-retail/language-masters/en.html)
 
 ## Adapting your localhost
 
-The configuration is based on the configuration used by AMS. If you are planning to deploy the configuration into AMS, please make sure to also read the section on **Immutable files**.
+The image is based on the configuration used by AMS. If you are planning to deploy the configuration into AMS, please make sure to also read the section on **Immutable files**.
 
-As for now, it suffices to understand, that the configuration is environment agnostic. That means, it is supposed to run locally, on dev, stage and prod without any change. All environment specific variables are stored in a file `scripts/env.sh`.
+The configuration is environment agnostic. It is supposed to run as-is locally, on dev, stage and prod etc without any change. All environment specific variables are stored in a file `scripts/env.sh`.
 
-The inital configuration this setup is using
+The default configuration is
 
 `author.docker.local` for the Author
-
 `publish.docker.local`for the Publisher
 
-The Dispatcher connects to the Author and Publisher through `host.docker.internal` .
-
 Make sure that both are mapped in your local `/etc/hosts` file.
+The Dispatcher connects to the Author and Publisher through `host.docker.internal` .
 
 ```shell
 $ cat /etc/hosts | grep docker.local
@@ -115,7 +112,7 @@ There are several options to use this container with your own configuration:
 ### Start dispatcher in container
 
 ```shell
-docker run -p 80:8080 -p 443:8443 -itd --rm --name dispatcher --env-file scripts/env.sh dispatcher 
+docker run -p 80:8080 -p 443:8443 -itd --rm --name dispatcher --env-file scripts/env.sh dispatcher
 ```
 
 ### Copy files to docker container
@@ -125,9 +122,9 @@ cd _your_project_/dispatcher/etc/httpd
 docker cp . dispatcher:/etc/httpd/
 ```
 
-### Connecting to the Dispatcher (à la SSH)
+### Connecting to the Dispatcher terminal
 
-You can run shell inside the dispatcher container. This is the equivalent of connecting to dispatcher via SSH
+You can run shell commands inside the dispatcher container.
 
 ```shell
 docker exec -it dispatcher /bin/bash
@@ -227,60 +224,56 @@ ENTRYPOINT ["/bin/bash","/launch.sh"]
 
 # Immutable files
 
-Certain files in AMS are immuatable, and cannot be changed. This is achieved on filesystem level by using extended attributes. Docker does not support such functionality which means that any changes to the dispatcher configuration will be reflected in your docker image, but may not be applied on an AMS environment after deployment.
+Certain files on AMS hosted dispatchers are immutable, and cannot be changed. This is achieved on filesystem level by using extended attributes. Docker does not support such functionality which means that any changes to the dispatcher configuration will be reflected in your docker image, but may not be applied on an AMS environment after deployment.
 
 Those files are:
 
 ```text
-|-- conf/
-|   `-- httpd.conf
-|-- conf.d/
-|   |-- available_vhosts/
-|   |   |-- 000_unhealthy_author.vhost
-|   |   |-- 000_unhealthy_publish.vhost
-|   |   |-- aem_author.vhost
-|   |   |-- aem_flush.vhost
-|   |   |-- aem_health.vhost
-|   |   |-- aem_lc.vhost
-|   |   `-- aem_publish.vhost
-|   |-- dispatcher_vhost.conf
-|   |-- logformat.conf
-|   |-- rewrites/
-|   |   |-- base_rewrite.rules
-|   |   `-- xforwarded_forcessl_rewrite.rules
-|   |-- security.conf
-|   `-- whitelists/
-|       `-- 000_base_whitelist.rules
-|-- conf.dispatcher.d/
-|   |-- available_farms/
-|   |   |-- 000_ams_author_farm.any
-|   |   |-- 001_ams_lc_farm.any
-|   |   `-- 999_ams_publish_farm.any
-|   |-- cache/
-|   |   |-- ams_author_cache.any
-|   |   |-- ams_author_invalidate_allowed.any
-|   |   |-- ams_publish_cache.any
-|   |   `-- ams_publish_invalidate_allowed.any
-|   |-- clientheaders/
-|   |   |-- ams_author_clientheaders.any
-|   |   |-- ams_common_clientheaders.any
-|   |   |-- ams_lc_clientheaders.any
-|   |   `-- ams_publish_clientheaders.any
-|   |-- dispatcher.any
-|   |-- filters/
-|   |   |-- ams_author_filters.any
-|   |   |-- ams_lc_filters.any
-|   |   `-- ams_publish_filters.any
-|   |-- renders/
-|   |   |-- ams_author_renders.any
-|   |   |-- ams_lc_renders.any
-|   |   `-- ams_publish_renders.any
-|   `-- vhosts/
-|       |-- ams_author_vhosts.any
-|       |-- ams_lc_vhosts.any
-|       `-- ams_publish_vhosts.any
-`-- conf.modules.d/
-    `-- 02-dispatcher.conf
+/etc/httpd/conf/httpd.conf
+/etc/httpd/conf.d/available_vhosts/aem_author.vhost
+/etc/httpd/conf.d/available_vhosts/aem_publish.vhost
+/etc/httpd/conf.d/available_vhosts/aem_flush.vhost
+/etc/httpd/conf.d/available_vhosts/aem_health.vhost
+/etc/httpd/conf.d/available_vhosts/000_unhealthy_author.vhost
+/etc/httpd/conf.d/available_vhosts/000_unhealthy_publish.vhost
+/etc/httpd/conf.d/available_vhosts/aem_flush_author.vhost
+/etc/httpd/conf.d/available_vhosts/ams_lc.vhost
+/etc/httpd/conf.d/rewrites/base_rewrite.rules
+/etc/httpd/conf.d/rewrites/xforwarded_forcessl_rewrite.rules
+/etc/httpd/conf.d/whitelists/000_base_whitelist.rules
+/etc/httpd/conf.d/variables/ootb.vars
+/etc/httpd/conf.d/dispatcher_vhost.conf
+/etc/httpd/conf.d/logformat.conf
+/etc/httpd/conf.d/security.conf
+/etc/httpd/conf.d/mimetypes3d.conf
+/etc/httpd/conf.d/remoteip.conf
+/etc/httpd/conf.d/000_init_ootb_vars.conf
+/etc/httpd/conf.d/001_init_ams_vars.conf
+/etc/httpd/conf.modules.d/02-dispatcher.conf
+/etc/httpd/conf.dispatcher.d/available_farms/000_ams_catchall_farm.any
+/etc/httpd/conf.dispatcher.d/available_farms/001_ams_author_flush_farm.any
+/etc/httpd/conf.dispatcher.d/available_farms/001_ams_publish_flush_farm.any
+/etc/httpd/conf.dispatcher.d/available_farms/002_ams_author_farm.any
+/etc/httpd/conf.dispatcher.d/available_farms/002_ams_lc_farm.any
+/etc/httpd/conf.dispatcher.d/available_farms/002_ams_publish_farm.any
+/etc/httpd/conf.dispatcher.d/cache/ams_author_cache.any
+/etc/httpd/conf.dispatcher.d/cache/ams_author_invalidate_allowed.any
+/etc/httpd/conf.dispatcher.d/cache/ams_publish_cache.any
+/etc/httpd/conf.dispatcher.d/cache/ams_publish_invalidate_allowed.any
+/etc/httpd/conf.dispatcher.d/clientheaders/ams_author_clientheaders.any
+/etc/httpd/conf.dispatcher.d/clientheaders/ams_publish_clientheaders.any
+/etc/httpd/conf.dispatcher.d/clientheaders/ams_common_clientheaders.any
+/etc/httpd/conf.dispatcher.d/clientheaders/ams_lc_clientheaders.any
+/etc/httpd/conf.dispatcher.d/filters/ams_author_filters.any
+/etc/httpd/conf.dispatcher.d/filters/ams_publish_filters.any
+/etc/httpd/conf.dispatcher.d/filters/ams_lc_filters.any
+/etc/httpd/conf.dispatcher.d/renders/ams_author_renders.any
+/etc/httpd/conf.dispatcher.d/renders/ams_lc_renders.any
+/etc/httpd/conf.dispatcher.d/renders/ams_publish_renders.any
+/etc/httpd/conf.dispatcher.d/vhosts/ams_author_vhosts.any
+/etc/httpd/conf.dispatcher.d/vhosts/ams_publish_vhosts.any
+/etc/httpd/conf.dispatcher.d/vhosts/ams_lc_vhosts.any
+/etc/httpd/conf.dispatcher.d/dispatcher.any
 ```
 
 # Troubleshooting
