@@ -46,7 +46,7 @@ ln -s /etc/httpd/conf.dispatcher.d/available_farms/002_ams_author_farm.any /etc/
 ln -s /etc/httpd/conf.dispatcher.d/available_farms/002_ams_publish_farm.any /etc/httpd/conf.dispatcher.d/enabled_farms/002_ams_publish_farm.any
 
 #set up sample configs
-RUN ln -s /etc/httpd/conf.dispatcher.d/available_farms/100_weretail_publish_farm.any /etc/httpd/conf.dispatcher.d/enabled_farms/100_weretail_publish_farm.any
+ln -s /etc/httpd/conf.dispatcher.d/available_farms/100_weretail_publish_farm.any /etc/httpd/conf.dispatcher.d/enabled_farms/100_weretail_publish_farm.any
 #set up dispatcher
 mkdir -p /tmp/dispatcher
 
