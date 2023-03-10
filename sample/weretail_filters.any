@@ -1,0 +1,11 @@
+/C001 { /type "allow" /url "/content*" /selectors '(coreimg|img)' }
+
+/C002 { /type "allow" /url "/content*" /selectors '(header_include|default)' /extension "html" }
+
+/C003 { /type "allow" /url "/etc/cloudsettings.kernel.js*" /selectors "kernel" /suffix "/libs/settings/cloudsettings/legacy/contexthub" /extension "js" }
+
+/C004 { /type "allow" /url "/libs/granite/security/currentuser.json" }
+
+/C005 { /type "allow" /url "/content*" /selectors '(pagedata|commerce)' /extension "json" }
+
+/C006 { /type "allow" /url "/conf*" /selectors '(seg)' /extension "js" }

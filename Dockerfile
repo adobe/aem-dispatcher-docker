@@ -23,7 +23,11 @@ RUN rm -rf /etc/httpd/conf/* && rm -rf /etc/httpd/conf.d/* && rm -rf /etc/httpd/
 
 #Copy the AMS base files into the image.
 COPY ams/2.6/etc/httpd /etc/httpd
-COPY haproxy/haproxy.cfg /etc/haproxy
+# Setup sample configs
+COPY sample/weretail_filters.any /etc/httpd/conf.dispatcher.d/filters/weretail_filters.any
+COPY sample/weretail_publish_farm.any /etc/httpd/conf.dispatcher.d/available_farms/100_weretail_publish_farm.any
+RUN ln -s /etc/httpd/conf.dispatcher.d/available_farms/100_weretail_publish_farm.any /etc/httpd/conf.dispatcher.d/enabled_farms/100_weretail_publish_farm.any
+
 
 # Install dispatcher
 ARG TARGETARCH
