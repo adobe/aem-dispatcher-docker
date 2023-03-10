@@ -32,14 +32,14 @@ ARG TARGETARCH
 COPY scripts/setup.sh /
 RUN chmod +x /setup.sh
 # ensuring correct file ending on windows systems
-RUN sed -i -e 's/\r$//' /setup.sh
+RUN sed -i -e 's/\r\n/\n/' /setup.sh
 RUN ./setup.sh
 RUN rm /setup.sh
 
 
 COPY scripts/launch.sh /
 # ensuring correct file ending on windows systems
-RUN sed -i -e 's/\r$//' /launch.sh
+RUN sed -i -e 's/\r\n/\n/' /launch.sh
 RUN chmod +x /launch.sh
 
 COPY LICENSE /
