@@ -1,5 +1,5 @@
 
 /.idea/
 logs/
-/dispatcher-docker.iml
+*.iml
 .DS_Store

@@ -16,61 +16,30 @@
 FROM --platform=$TARGETPLATFORM centos:7
 
 #install HTTPD
-RUN yum -y update
-RUN yum -y install httpd mod_ssl procps haproxy iputils tree telnet
+RUN yum -y update && yum -y install httpd mod_ssl procps haproxy iputils tree telnet && yum clean all
 
 #remove default CentOS config
-RUN rm -rf /etc/httpd/conf/*
-RUN rm -rf /etc/httpd/conf.d/*
-RUN rm -rf /etc/httpd/conf.modules.d/*
+RUN rm -rf /etc/httpd/conf/* && rm -rf /etc/httpd/conf.d/* && rm -rf /etc/httpd/conf.modules.d/*
 
 #Copy the AMS base files into the image.
 COPY ams/2.6/etc/httpd /etc/httpd
-RUN mkdir /etc/httpd/conf.d/enabled_vhosts
-RUN ln -s /etc/httpd/conf.d/available_vhosts/aem_author.vhost /etc/httpd/conf.d/enabled_vhosts/aem_author.vhost
-RUN ln -s /etc/httpd/conf.d/available_vhosts/aem_flush_author.vhost /etc/httpd/conf.d/enabled_vhosts/aem_flush_author.vhost
-RUN ln -s /etc/httpd/conf.d/available_vhosts/aem_publish.vhost /etc/httpd/conf.d/enabled_vhosts/aem_publish.vhost
-RUN ln -s /etc/httpd/conf.d/available_vhosts/aem_flush.vhost /etc/httpd/conf.d/enabled_vhosts/aem_flush.vhost
-RUN ln -s /etc/httpd/conf.d/available_vhosts/aem_health.vhost /etc/httpd/conf.d/enabled_vhosts/aem_health.vhost
-
-RUN mkdir /etc/httpd/conf.dispatcher.d/enabled_farms
-RUN ln -s /etc/httpd/conf.dispatcher.d/available_farms/000_ams_catchall_farm.any /etc/httpd/conf.dispatcher.d/enabled_farms/000_ams_catchall_farm.any
-RUN ln -s /etc/httpd/conf.dispatcher.d/available_farms/001_ams_author_flush_farm.any /etc/httpd/conf.dispatcher.d/enabled_farms/001_ams_author_flush_farm.any
-RUN ln -s /etc/httpd/conf.dispatcher.d/available_farms/001_ams_publish_flush_farm.any /etc/httpd/conf.dispatcher.d/enabled_farms/001_ams_publish_flush_farm.any
-RUN ln -s /etc/httpd/conf.dispatcher.d/available_farms/002_ams_author_farm.any /etc/httpd/conf.dispatcher.d/enabled_farms/002_ams_author_farm.any
-
 # Setup sample configs
 COPY sample/weretail_filters.any /etc/httpd/conf.dispatcher.d/filters/weretail_filters.any
 COPY sample/weretail_publish_farm.any /etc/httpd/conf.dispatcher.d/available_farms/100_weretail_publish_farm.any
-RUN ln -s /etc/httpd/conf.dispatcher.d/available_farms/100_weretail_publish_farm.any /etc/httpd/conf.dispatcher.d/enabled_farms/100_weretail_publish_farm.any
 
 # Install dispatcher
 ARG TARGETARCH
 COPY scripts/setup.sh /
 RUN chmod +x /setup.sh
+# ensuring correct file ending on windows systems
+RUN sed -i -e 's/\r\n/\n/' /setup.sh
 RUN ./setup.sh
 RUN rm /setup.sh
 
-# Create default docroots
-RUN mkdir -p /mnt/var/www/html
-RUN chown apache:apache /mnt/var/www/html
-
-RUN mkdir -p /mnt/var/www/default
-RUN chown apache:apache /mnt/var/www/default
-
-RUN mkdir -p /mnt/var/www/author
-RUN chown apache:apache /mnt/var/www/author
-
-# Setup SSL
-RUN mkdir -p /etc/ssl/docker && \
-    openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=GB/ST=London/L=London/O=Adobe/CN=localhost" \
-     -keyout /etc/ssl/docker/localhost.key \
-     -out /etc/ssl/docker/localhost.crt && \
-    cat /etc/ssl/docker/localhost.key /etc/ssl/docker/localhost.crt > /etc/ssl/docker/haproxy.pem
-
-COPY haproxy/haproxy.cfg /etc/haproxy
 
 COPY scripts/launch.sh /
+# ensuring correct file ending on windows systems
+RUN sed -i -e 's/\r\n/\n/' /launch.sh
 RUN chmod +x /launch.sh
 
 COPY LICENSE /
