@@ -15,30 +15,32 @@
 #
 FROM --platform=$TARGETPLATFORM centos:7
 
-#install HTTPD
+# Install HTTPD
 RUN yum -y update && yum -y install httpd mod_ssl procps haproxy iputils tree telnet && yum clean all
 
-#remove default CentOS config
+# Remove default CentOS config
 RUN rm -rf /etc/httpd/conf/* && rm -rf /etc/httpd/conf.d/* && rm -rf /etc/httpd/conf.modules.d/*
 
-#Copy the AMS base files into the image.
+# Copy the AMS base files into the image.
 COPY ams/2.6/etc/httpd /etc/httpd
 # Setup sample configs
 COPY sample/weretail_filters.any /etc/httpd/conf.dispatcher.d/filters/weretail_filters.any
 COPY sample/weretail_publish_farm.any /etc/httpd/conf.dispatcher.d/available_farms/100_weretail_publish_farm.any
 
+# Copy haproxy config
+COPY haproxy/haproxy.cfg /etc/haproxy
+
 # Install dispatcher
 ARG TARGETARCH
 COPY scripts/setup.sh /
 RUN chmod +x /setup.sh
-# ensuring correct file ending on windows systems
+# Ensuring correct file ending on windows systems
 RUN sed -i -e 's/\r\n/\n/' /setup.sh
 RUN ./setup.sh
 RUN rm /setup.sh
 
-
 COPY scripts/launch.sh /
-# ensuring correct file ending on windows systems
+# Ensuring correct file ending on windows systems
 RUN sed -i -e 's/\r\n/\n/' /launch.sh
 RUN chmod +x /launch.sh
 
