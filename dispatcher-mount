@@ -24,7 +24,7 @@ echo ""
 
 # copy sample we-retail files
 cp sample/weretail.vhost             $VERSION/etc/httpd/conf.d/available_vhosts
-cp sample/weretail_publish_farm.any  $VERSION/etc/httpd/conf.dispatcher.d/available_farms
+cp sample/weretail_publish_farm.any  $VERSION/etc/httpd/conf.dispatcher.d/available_farms/100_weretail_publish_farm.any
 cp sample/weretail_filters.any       $VERSION/etc/httpd/conf.dispatcher.d/filters
 
 #create and link up default enabled vhosts
@@ -47,7 +47,7 @@ ln -Fs ../available_farms/000_ams_catchall_farm.any         $VERSION/etc/httpd/c
 ln -Fs ../available_farms/001_ams_author_flush_farm.any     $VERSION/etc/httpd/conf.dispatcher.d/enabled_farms/001_ams_author_flush_farm.any
 ln -Fs ../available_farms/001_ams_publish_flush_farm.any    $VERSION/etc/httpd/conf.dispatcher.d/enabled_farms/001_ams_publish_flush_farm.any
 ln -Fs ../available_farms/002_ams_author_farm.any           $VERSION/etc/httpd/conf.dispatcher.d/enabled_farms/002_ams_author_farm.any
-#ln -Fs /etc/httpd/conf.dispatcher.d/available_farms/002_ams_publish_farm.any /etc/httpd/conf.dispatcher.d/enabled_farms/002_ams_publish_farm.any
+ln -Fs ../available_farms/002_ams_publish_farm.any          $VERSION/etc/httpd/conf.dispatcher.d/enabled_farms/002_ams_publish_farm.any
 
 #set up sample configs
 ln -Fs ../available_farms/100_weretail_publish_farm.any     $VERSION/etc/httpd/conf.dispatcher.d/enabled_farms/100_weretail_publish_farm.any
