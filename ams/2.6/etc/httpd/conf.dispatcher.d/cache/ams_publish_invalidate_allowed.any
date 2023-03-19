@@ -7,3 +7,7 @@
 	/glob "${PUBLISH_IP}"
 	/type "allow"
 }
+/02 {
+	/glob "127.0.0.1"
+	/type "allow"
+}
