@@ -90,6 +90,7 @@ The Dispatcher connects to the Author and Publisher through `host.docker.interna
 $ cat /etc/hosts | grep docker.local
 127.0.0.1 author.docker.local
 127.0.0.1 publish.docker.local
+127.0.0.1 we-retail.docker.local
 127.0.0.1 host.docker.internal
 ```
 
