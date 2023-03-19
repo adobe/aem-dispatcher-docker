@@ -70,7 +70,7 @@ CONTAINER ID   IMAGE        COMMAND                  CREATED              STATUS
 ## Testing your AEM installation
 
 The dispatcher maps `publish.docker.local` to the local publisher instance on port 4503. 
-Run the publisher and navigate to [http://publish.docker.local/content/we-retail/language-masters/en.html](http://publish.docker.local/content/we-retail/language-masters/en.html)
+Run the publisher and navigate to [http://we-retail.docker.local/content/we-retail/language-masters/en.html](http://we-retail.docker.local/content/we-retail/language-masters/en.html)
 
 ## Adapting your localhost
 

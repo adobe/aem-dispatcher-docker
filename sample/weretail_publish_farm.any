@@ -7,7 +7,8 @@
 	}
 	## hostname globbing for farm selection (virtual domain addressing)
 	/virtualhosts {
-		$include "/etc/httpd/conf.dispatcher.d/vhosts/ams_publish_vhosts.any"
+		we-retail
+		we-retail.docker.local
 	}
 	## the load will be balanced among these render instances
 	/renders {
@@ -16,7 +17,6 @@
 	## only handle the requests in the following acl. default is 'none'
 	## the glob pattern is matched against the first request line
 	/filter {
-        $include "/etc/httpd/conf.dispatcher.d/filters/ams_publish_filters.any"
 		$include "/etc/httpd/conf.dispatcher.d/filters/weretail_filters.any"
 	}
 	## if the package is installed on publishers to generate a list of all content with a vanityurl attached

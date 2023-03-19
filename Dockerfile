@@ -16,7 +16,7 @@
 FROM --platform=$TARGETPLATFORM centos:7
 
 # Install HTTPD
-RUN yum -y update && yum -y install httpd mod_ssl procps haproxy iputils tree telnet && yum clean all
+RUN yum -y update && yum -y install httpd mod_ssl procps haproxy iputils tree telnet less && yum clean all
 
 # Remove default CentOS config
 RUN rm -rf /etc/httpd/conf/* && rm -rf /etc/httpd/conf.d/* && rm -rf /etc/httpd/conf.modules.d/*
@@ -26,6 +26,7 @@ COPY ams/2.6/etc/httpd /etc/httpd
 # Setup sample configs
 COPY sample/weretail_filters.any /etc/httpd/conf.dispatcher.d/filters/weretail_filters.any
 COPY sample/weretail_publish_farm.any /etc/httpd/conf.dispatcher.d/available_farms/100_weretail_publish_farm.any
+COPY sample/weretail.vhost /etc/httpd/conf.d/available_vhosts/
 
 # Copy haproxy config
 COPY haproxy/haproxy.cfg /etc/haproxy

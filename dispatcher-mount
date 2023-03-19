@@ -18,9 +18,40 @@ mkdir cache 2> /dev/null
 
 echo ""
 echo "Starting dispatcher, mounting local configuration from ./$VERSION/$PATH_TO_CONF ..."
-echo " Open your browser at http://publish.docker.local/content/we-retail/us/en.html  
+echo " Open your browser at http://publish.docker.local/content/we-retail/us/en.html "
 echo " **** Press Ctrl-C to stop **** "
 echo ""
+
+# copy sample we-retail files
+cp sample/weretail.vhost             $VERSION/etc/httpd/conf.d/available_vhosts
+cp sample/weretail_publish_farm.any  $VERSION/etc/httpd/conf.dispatcher.d/available_farms
+cp sample/weretail_filters.any       $VERSION/etc/httpd/conf.dispatcher.d/filters
+
+#create and link up default enabled vhosts
+if [ ! -d $VERSION/etc/httpd/conf.d/enabled_vhosts ]; then
+  mkdir $VERSION/etc/httpd/conf.d/enabled_vhosts
+fi
+
+ln -Fs ../available_vhosts/aem_author.vhost       $VERSION/etc/httpd/conf.d/enabled_vhosts/aem_author.vhost
+ln -Fs ../available_vhosts/aem_flush_author.vhost $VERSION/etc/httpd/conf.d/enabled_vhosts/aem_flush_author.vhost
+ln -Fs ../available_vhosts/aem_publish.vhost      $VERSION/etc/httpd/conf.d/enabled_vhosts/aem_publish.vhost
+ln -Fs ../available_vhosts/aem_flush.vhost        $VERSION/etc/httpd/conf.d/enabled_vhosts/aem_flush.vhost
+ln -Fs ../available_vhosts/aem_health.vhost       $VERSION/etc/httpd/conf.d/enabled_vhosts/aem_health.vhost
+ln -Fs ../available_vhosts/weretail.vhost         $VERSION/etc/httpd/conf.d/enabled_vhosts/weretail.vhost
+
+#create and link up default enabled farms
+if [ ! -d $VERSION/etc/httpd/conf.dispatcher.d/enabled_farms ]; then
+  mkdir $VERSION/etc/httpd/conf.dispatcher.d/enabled_farms
+fi
+ln -Fs ../available_farms/000_ams_catchall_farm.any         $VERSION/etc/httpd/conf.dispatcher.d/enabled_farms/000_ams_catchall_farm.any
+ln -Fs ../available_farms/001_ams_author_flush_farm.any     $VERSION/etc/httpd/conf.dispatcher.d/enabled_farms/001_ams_author_flush_farm.any
+ln -Fs ../available_farms/001_ams_publish_flush_farm.any    $VERSION/etc/httpd/conf.dispatcher.d/enabled_farms/001_ams_publish_flush_farm.any
+ln -Fs ../available_farms/002_ams_author_farm.any           $VERSION/etc/httpd/conf.dispatcher.d/enabled_farms/002_ams_author_farm.any
+#ln -Fs /etc/httpd/conf.dispatcher.d/available_farms/002_ams_publish_farm.any /etc/httpd/conf.dispatcher.d/enabled_farms/002_ams_publish_farm.any
+
+#set up sample configs
+ln -Fs ../available_farms/100_weretail_publish_farm.any     $VERSION/etc/httpd/conf.dispatcher.d/enabled_farms/100_weretail_publish_farm.any
+
 
 docker run -p 80:8080 -p 443:8443 -it --rm  \
   --mount type=bind,src=$(pwd)/$VERSION/$PATH_TO_CONF/conf,dst=/etc/httpd/conf,readonly=true \
@@ -32,5 +63,4 @@ docker run -p 80:8080 -p 443:8443 -it --rm  \
   --mount type=tmpfs,dst=/tmp \
   --env-file scripts/env.sh \
   --name mydispatcher dispatcher | cat
-
 
