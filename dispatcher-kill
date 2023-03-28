@@ -1,3 +1,3 @@
 #!/bin/sh
 
-docker kill dispatcher
+docker kill mydispatcher
