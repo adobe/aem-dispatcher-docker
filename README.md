@@ -59,6 +59,14 @@ docker run -p 80:8080 -p 443:8443 -itd --rm --env-file scripts/env.sh --name dis
 | --env-file        | Environment file to bind to the container                    |
 | --name dispatcher | assign name "dispatcher" to the container, consider setting a different name per project.                   |
 
+### Using Docker Compose
+
+Provided `docker-compose.yaml` can be modified to suit your needs.
+
+You can start dispatcher with Docker Compose using script `dispatcher-docker-compose`
+
+
+
 ## Checking the container's current state
 
 ```shell
