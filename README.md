@@ -61,10 +61,18 @@ docker run -p 80:8080 -p 443:8443 -itd --rm --env-file scripts/env.sh --name dis
 
 ### Using Docker Compose
 
-Provided `docker-compose.yaml` can be modified to suit your needs.
+Provided `docker-compose.yaml` can be modified to suit your needs. In a typical scenario you would incorporate it to your 
+own Docker Compose configuration. 
 
 You can start dispatcher with Docker Compose using script `dispatcher-docker-compose`
 
+Following folders are mounted from the host os to make it easier to inspect cached files and monitor log files.
+
+| Folder               |                                                              |
+| -------------------- | ------------------------------------------------------------ |
+| mnt/author_docroot   | Author cached files                                          |
+| mnt/publish_docroot  | Publish cached files                                         |
+| mnt/log              | Dispatcher logs                                              |
 
 
 ## Checking the container's current state
