@@ -136,7 +136,7 @@ docker exec -it dispatcher /bin/bash
 You can reload the dispatcher with following command:
 
 ```shell
-kill -HUP `cat /run/httpd/httpd.pid`
+kill -HUP `cat /var/run/httpd/httpd.pid`
 ```
 
 ### Inspecting the logs
