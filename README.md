@@ -2,7 +2,7 @@
 # Dispatcher Docker image
 
 This is a simple dispatcher image that is very close to an AMS setup.
-It builds on top of [centos7](https://hub.docker.com/_/centos/) since the AMS dispatcher is build on top of Redhat Enterprise Linux 7.7 and contains the default AMS Dispatcher 2.6 configuration.
+It builds on top of [Redhat Universal Base Image 8.8](https://hub.docker.com/r/redhat/ubi8) and contains the default AMS Dispatcher 2.6 configuration.
 
 The default publish host has been set to `publish.docker.local` and the default renderer is set to `host.docker.internal:4503` which should point to the AEM instance running on your local computer.
 
@@ -21,7 +21,7 @@ docker buildx create --use
 docker buildx build --load -t dispatcher --platform=linux/amd64 .
 ```
 
-To build for Apple M1/M2, use `--platform=linux/arm64` instead
+To build for Apple Silicon or Windows ARM, use `--platform=linux/arm64` instead
 
 Multi-arch images can be built, but can only be pushed to a remote registry and not be directly loaded in Docker desktop.
 
@@ -61,8 +61,7 @@ docker run -p 80:8080 -p 443:8443 -itd --rm --env-file scripts/env.sh --name dis
 
 ### Using Docker Compose
 
-Provided `docker-compose.yaml` can be modified to suit your needs. In a typical scenario you would incorporate it to your 
-own Docker Compose configuration. 
+Provided `docker-compose.yaml` can be modified to suit your needs. In a typical scenario you would incorporate it to your own Docker Compose configuration.
 
 You can start dispatcher with Docker Compose using script `dispatcher-docker-compose`
 
@@ -74,7 +73,6 @@ Following folders are mounted from the host os to make it easier to inspect cach
 | mnt/publish_docroot  | Publish cached files                                         |
 | mnt/log              | Dispatcher logs                                              |
 
-
 ## Checking the container's current state
 
 ```shell
@@ -85,7 +83,7 @@ CONTAINER ID   IMAGE        COMMAND                  CREATED              STATUS
 
 ## Testing your AEM installation
 
-The dispatcher maps `publish.docker.local` to the local publisher instance on port 4503. 
+The dispatcher maps `publish.docker.local` to the local publisher instance on port 4503.
 Run the publisher and navigate to [http://we-retail.docker.local/content/we-retail/language-masters/en.html](http://we-retail.docker.local/content/we-retail/language-masters/en.html)
 
 ## Adapting your localhost
