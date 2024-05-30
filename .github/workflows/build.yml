@@ -30,11 +30,11 @@ jobs:
         id: metadata
         uses: docker/metadata-action@v5
         with:
-          images: adobe/aem-dispatcher-docker
+          images: ghcr.io/adobe/aem-dispatcher-docker
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
           platforms: linux/amd64,linux/arm64
-          push: false
-          tags: ${{ steps.metadata.outputs.tags }}
+          push: true
+          tags: ghcr.io/${{ steps.metadata.outputs.tags }}
           labels: ${{ steps.metadata.outputs.labels }}
