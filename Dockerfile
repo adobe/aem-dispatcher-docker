@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-FROM --platform=$TARGETPLATFORM redhat/ubi8:8.10-901.1716482497
+FROM --platform=$TARGETPLATFORM redhat/ubi8:8.8
 
 # Install HTTPD
 RUN yum -y update && yum -y install httpd mod_ssl procps haproxy iputils less openssl && yum clean all
