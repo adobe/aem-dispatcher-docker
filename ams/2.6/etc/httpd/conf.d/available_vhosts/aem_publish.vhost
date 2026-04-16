@@ -5,7 +5,10 @@ PassEnv DISP_ID
 <VirtualHost *:80>
         ## allowing slashes in the URL to be encoded and still honored
         AllowEncodedSlashes On
-	ServerName	publish
+
+	# AMSAUTO-29303
+	ServerName	"${PUBLISH_DEFAULT_SCHEME}publish"
+
 	## Put names of which domains are used for your published site/content here
 	ServerAlias	${PUBLISH_DEFAULT_HOSTNAME} 
 

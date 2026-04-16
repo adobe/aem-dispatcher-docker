@@ -1,6 +1,9 @@
 ## Collect any enviromental variables that are set in /etc/sysconfig/httpd
 <VirtualHost *:80>
-	ServerName	livecycle
+
+	# AMSAUTO-29303
+	ServerName	"${LIVECYCLE_DEFAULT_SCHEME}livecycle"
+
 	## Put names of which domains are used for your livecycle site/content here
 	ServerAlias	${LIVECYCLE_DEFAULT_HOSTNAME}
 	## Use a doc root that matches what's in the /etc/httpd/conf.dispatcher.d/lc-farm.any

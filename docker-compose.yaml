@@ -29,10 +29,8 @@ services:
       - DISPATCHER_FLUSH_FROM_ANYWHERE=allow
 
     volumes:
-      - ./ams/2.6/etc/httpd/conf:/etc/httpd/conf:ro
       - ./ams/2.6/etc/httpd/conf.d:/etc/httpd/conf.d:ro
       - ./ams/2.6/etc/httpd/conf.dispatcher.d:/etc/httpd/conf.dispatcher.d:ro
-      - ./ams/2.6/etc/httpd/conf.modules.d:/etc/httpd/conf.modules.d:ro
       - ./mnt/author_docroot:/var/www/author:rw
       - ./mnt/publish_docroot:/var/www/html:rw
       - ./mnt/log:/var/log/httpd:rw

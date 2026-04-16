@@ -2,7 +2,7 @@
 # Dispatcher Docker image
 
 This is a simple dispatcher image that is very close to an AMS setup.
-It builds on top of [Redhat Universal Base Image 8.8](https://hub.docker.com/r/redhat/ubi8) and contains the default AMS Dispatcher 2.6 configuration.
+It builds on top of [Redhat Universal Base Image 8.10](https://hub.docker.com/r/redhat/ubi8) and contains the default AMS Dispatcher 2.6 configuration.
 
 The default publish host has been set to `publish.docker.local` and the default renderer is set to `host.docker.internal:4503` which should point to the AEM instance running on your local computer.
 

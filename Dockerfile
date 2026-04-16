@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2024 Adobe Systems Incorporated. All rights reserved.
+# Copyright (c) 2026 Adobe Systems Incorporated. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,13 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-FROM --platform=$TARGETPLATFORM redhat/ubi8:8.8
+FROM redhat/ubi8:8.10
 
 # Install HTTPD
-RUN yum -y update && yum -y install httpd mod_ssl procps haproxy iputils less openssl && yum clean all
+RUN yum -y update && yum -y install httpd mod_ssl mod_security procps haproxy iputils less openssl && yum clean all
 
 # Remove default httpd config
-RUN rm -rf /etc/httpd/conf/* && rm -rf /etc/httpd/conf.d/* && rm -rf /etc/httpd/conf.modules.d/*
+RUN rm -rf /etc/httpd/conf.d/* && rm -rf /etc/httpd/conf.modules.d/*
 
 # Copy the AMS base files into the image.
 COPY ams/2.6/etc/httpd /etc/httpd
