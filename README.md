@@ -177,10 +177,8 @@ cd _your_project_/dispatcher
 mkdir logs
 
 docker run -p 80:8080 -p 443:8443 -itd --rm --name dispatcher --env-file scripts/env.sh \
-  --mount type=bind,src=$(pwd)/src/conf,dst=/etc/httpd/conf,readonly=true \
   --mount type=bind,src=$(pwd)/src/conf.d,dst=/etc/httpd/conf.d,readonly=true \
   --mount type=bind,src=$(pwd)/src/conf.dispatcher.d,dst=/etc/httpd/conf.dispatcher.d,readonly=true \
-  --mount type=bind,src=$(pwd)/src/conf.modules.d,dst=/etc/httpd/conf.modules.d,readonly=true \
   --mount type=bind,src=$(pwd)/logs,dst=/var/log/httpd \
   --mount type=tmpfs,dst=/tmp \
   dispatcher
@@ -227,8 +225,6 @@ You can also use this image as a base image, and add your configuration on top o
 ```Dockerfile
 FROM dispatcher
 
-COPY yourproject/dispatcher/src/conf /etc/httpd
-COPY yourproject/dispatcher/src/conf.d /etc/httpd
 COPY yourproject/dispatcher/src/conf.dispatcher.d /etc/httpd
 COPY yourproject/dispatcher/src/conf.modules.d /etc/httpd
 COPY yourproject/dispatcher/cert.pem /etc/ssl/docker/haproxy.pem 
