@@ -17,7 +17,7 @@
 /0011 { /type "allow" /method "GET" /extension '(css|eot|gif|ico|jpeg|jpg|js|gif|png|svg|swf|ttf|woff|woff2)' /path "/etc/clientlibs/*" }
 
 ## Enable clientlibs proxy servlet
-/0012 { /type "allow" /method "GET" /url "/etc.clientlibs/*" /suffix '(.*.css$|.*.eot$|.*.gif$|.*.ico$|.*.jpeg$|.*.jpg$|.*.js$|.*.gif$|.*.png$|.*.svg$|.*.swf$|.*.ttf$|.*.woff$|.*.woff2$)' }
+/0012 { /type "allow" /method "GET" /url "/etc.clientlibs/*" /suffix '.*\\.(css|eot|gif|ico|jpeg|jpg|js|gif|png|svg|swf|ttf|woff|woff2)$' }
 
 ## Enable basic features
 /0013 { /type "allow" /method "GET" /url '/libs/granite/csrf/token.json' /extension 'json' } ## AEM provides a framework aimed at preventing Cross-Site Request Forgery attacks

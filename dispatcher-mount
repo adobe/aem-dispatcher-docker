@@ -54,10 +54,8 @@ ln -Fs ../available_farms/100_weretail_publish_farm.any     $VERSION/etc/httpd/c
 
 
 docker run -p 80:8080 -p 443:8443 -it --rm  \
-  --mount type=bind,src=$(pwd)/$VERSION/$PATH_TO_CONF/conf,dst=/etc/httpd/conf,readonly=true \
   --mount type=bind,src=$(pwd)/$VERSION/$PATH_TO_CONF/conf.d,dst=/etc/httpd/conf.d,readonly=true \
   --mount type=bind,src=$(pwd)/$VERSION/$PATH_TO_CONF/conf.dispatcher.d,dst=/etc/httpd/conf.dispatcher.d,readonly=true \
-  --mount type=bind,src=$(pwd)/$VERSION/$PATH_TO_CONF/conf.modules.d,dst=/etc/httpd/conf.modules.d,readonly=true \
   --mount type=bind,src=$(pwd)/logs,dst=/var/log/httpd \
   --mount type=bind,src=$(pwd)/cache,dst=/mnt/var/www/html \
   --mount type=tmpfs,dst=/tmp \

@@ -7,8 +7,3 @@ logs/
 cache/
 **/enabled_vhosts
 **/enabled_farms
-
-# do not check in samples 
-**/conf.d/available_vhosts/weretail.vhost
-**/conf.dispatcher.d/filters/weretail_filters.any
-**/conf.dispatcher.d/available_farms/weretail_publish_farm.any

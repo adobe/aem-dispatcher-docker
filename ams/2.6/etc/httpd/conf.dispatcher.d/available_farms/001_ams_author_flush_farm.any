@@ -1,4 +1,3 @@
-
 /authorflushfarm {  
 	/clientheaders {
 		$include "/etc/httpd/conf.dispatcher.d/clientheaders/ams_author_clientheaders.any"
@@ -35,5 +34,9 @@
 			## Allow certain IP's like publishers to invalidate cache
 			$include "/etc/httpd/conf.dispatcher.d/cache/ams_author_invalidate_allowed.any"
 		}
+		### Added for DOT Compliance https://www.adobe.com/go/aem_cmcq_disp-3---graceperiod_en
+		/gracePeriod "2"
+		### Added for DOT Compliance https://www.adobe.com/go/aem_cmcq_disp-5---servestaleo_en
+		/serveStaleOnError "1"
 	}
 }

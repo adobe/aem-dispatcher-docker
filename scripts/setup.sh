@@ -53,13 +53,13 @@ ln -s /etc/httpd/conf.dispatcher.d/available_farms/100_weretail_publish_farm.any
 #set up dispatcher
 mkdir -p /tmp/dispatcher
 
-curl -o /tmp/dispatcher/dispatcher.tar.gz https://download.macromedia.com/dispatcher/download/dispatcher-apache2.4-linux-$DISPARCH-4.3.5.tar.gz
+curl -o /tmp/dispatcher/dispatcher.tar.gz https://download.macromedia.com/dispatcher/download/dispatcher-apache2.4-linux-$DISPARCH-4.3.7.tar.gz
 
 cd /tmp/dispatcher
 
 tar zxvf dispatcher.tar.gz
 
-cp -v dispatcher-apache2.4-4.3.5.so /etc/httpd/modules/mod_dispatcher.so
+cp -v dispatcher-apache2.4-4.3.7.so /etc/httpd/modules/mod_dispatcher.so
 
 #set up haproxy SSL
 mkdir -p /etc/ssl/docker && \

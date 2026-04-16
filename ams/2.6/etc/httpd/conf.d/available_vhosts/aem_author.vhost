@@ -5,7 +5,9 @@ PassEnv DISP_ID
 <VirtualHost *:80>
         ## allowing slashes in the URL to be encoded and still honored
         AllowEncodedSlashes On
-	ServerName	"author"
+
+	# AMSAUTO-29303
+	ServerName	"${AUTHOR_DEFAULT_SCHEME}author"
 	ServerAlias	${AUTHOR_DEFAULT_HOSTNAME}
 
 

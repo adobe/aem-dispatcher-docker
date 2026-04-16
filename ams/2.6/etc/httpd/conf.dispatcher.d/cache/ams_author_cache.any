@@ -14,7 +14,7 @@
 	/type "allow"
 }
 /0002 {
-	/glob "/libs/*.html"
+	/glob "/libs/*.htm*"
 	/type "deny"
 }
 ## Don't cache csrf login tokens
@@ -34,4 +34,17 @@
 /0006 {
 	/glob "/libs/cq/core/content/welcome.*"
 	/type "deny"
+}
+## Don't allow potentially sensitive information to be cached - VULN-24090
+/0007 {
+         /glob "/apps/*conf*"
+         /type "deny"
+}
+/0008 {
+        /glob "*.jar"
+        /type "deny"
+}
+/0009 {
+        /glob "/libs/*currentuser*"
+        /type "deny"
 }
